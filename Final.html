@@ -1,8 +1,103 @@
 <html>
 
 <head>
-<title>Project - CG</title>
 
+<title>Project - CG</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<style>
+div {
+	border-radius: 5px;
+}
+body{
+	background-color:#E6E6FA;
+}
+
+#header {
+	z-index: 1;
+	position: fixed;
+	width: 100%;
+	margin-top: -20px;
+	height: 60px;
+	background-color: #668284;
+	margin-bottom: 10px;
+}
+
+#name {
+
+	margin-left: 500px;
+    	margin-right: 500px;
+	padding-top: 5px;
+	font-size: 20px;
+	font-weight: bold;
+	font-family: Verdana, sans-serif;
+	color: #8FBC8F;
+}
+
+
+h4 {
+	margin-left: 5px;
+	margin-bottom: 15px;
+	font-family: Verdana, sans-serif;
+}
+
+
+a:hover {
+	font-weight: bold;
+}
+
+
+#button1
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 22px;
+	width: 230px;
+	text-align: center;
+	top: 550px;
+    	left: 20px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#button2
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 35px;
+	width: 100px;
+	text-align: center;
+	top: 518px;
+    	left: 275px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#button3
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 35px;
+	width: 100px;
+	text-align: center;
+	top: 518px;
+    	left: 900px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#texture
+{
+    position: fixed;
+    border-radius: 5px;
+    border: 4px solid #BCC6CC;
+    margin-top: 30px;
+}
+
+
+</style>
 
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
@@ -114,25 +209,45 @@
 
 
     function handleLoadedTexture(texture) {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	
+	gl.bindTexture(gl.TEXTURE_2D, texture[0]); 
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.bindTexture(gl.TEXTURE_2D, null);
+
+
+	gl.bindTexture(gl.TEXTURE_2D, texture[1]); 
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image); 
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); 
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); 
+	
+	gl.bindTexture(gl.TEXTURE_2D, texture[0]);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); 
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);  
+	gl.generateMipmap(gl.TEXTURE_2D);        
+
+	gl.bindTexture(gl.TEXTURE_2D, null);
     }
 
 
     var nTexture;
 
-    function initTexture() {
+    function initTexture(iName){
+
         nTexture = gl.createTexture();
         nTexture.image = new Image();
+	nTexture.image.crossOrigin = "Anonymous";
         nTexture.image.onload = function () {
             handleLoadedTexture(nTexture)
         }
-
-        nTexture.image.src = "x.jpg";
+	if(iName.value == 0)
+	{
+		nTexture.image.src = "x.jpg";
+	}
+	else
+            nTexture.image.src = iName.value;
     }
 
 
@@ -268,7 +383,7 @@
                 0.2, 0.2,
                 1.0, 0.2,
 
-		0.5, 1.0,
+		        0.5, 1.0,
                 0.2, 0.2,
                 1.0, 0.2,
 
@@ -403,7 +518,7 @@
 
         mat4.identity(mvMatrix);
 
-        mat4.translate(mvMatrix, [0.0, 0.0, -5.0]);
+        mat4.translate(mvMatrix, [0.0, 0.0, -8.0]);
 
         //Texture
         gl.activeTexture(gl.TEXTURE0);
@@ -412,7 +527,7 @@
 
         //Drawing the Cube
         mvPushMatrix();
-        mat4.rotate(mvMatrix, degToRad(rCube), [1, 0, 1]);
+        mat4.rotate(mvMatrix, degToRad(rCube), [1, 0, 0]);
 
 
         gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
@@ -505,6 +620,47 @@
 
 	mvPopMatrix();
 
+    // Centre Pyramid
+        mat4.translate(mvMatrix, [-31.0, -1.0, 30.0]);
+
+        mvPushMatrix();
+        mat4.rotate(mvMatrix, degToRad(rCube), [1,0,0]);
+        setMatrixUniforms();
+        gl.drawArrays(gl.TRIANGLES,0,pyramidVertexPositionBuffer.numItems);
+
+    mvPopMatrix();
+    // Left Cube
+        mat4.translate(mvMatrix, [-14.0, 5.0, -10.0]);
+
+        mvPushMatrix();
+        mat4.rotate(mvMatrix, degToRad(rPyramid1), [0, 1, 1]);
+
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+        setMatrixUniforms();
+        gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+        mvPopMatrix();
+
+     // Right Cube
+        mat4.translate(mvMatrix, [28.0, 0.0, 0.0]);
+
+        mvPushMatrix();
+        mat4.rotate(mvMatrix, degToRad(rPyramid2), [0, 1, 1]);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+        setMatrixUniforms();
+        gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+        mvPopMatrix();
+
     }
 
 
@@ -516,33 +672,32 @@
             var elapsed = timeNow - lastTime;
 
             rCube += (60 * elapsed) / 1000.0;
-            rPyramid1 += (60 * elapsed)/ 1000.0;
-            rPyramid2 -= (60 * elapsed)/1000.0;
+            rPyramid1 += (80 * elapsed)/ 1000.0;
+            rPyramid2 -= (80 * elapsed)/1000.0;
         }
         lastTime = timeNow;
     }
 
 
     function tick() {
-        requestAnimFrame(tick);
-        drawScene();
+	requestAnimFrame(tick);
+	drawScene(); 
         animate();
     }
 
 
     function webGLStart() {
         var canvas = document.getElementById("texture");
+        var inpName = document.getElementById("cur");
         initGL(canvas);
         initShaders();
         initBuffers();
-        initTexture();
+        initTexture(inpName);
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
-
         tick();
     }
-
 
 </script>
 
@@ -552,9 +707,26 @@
 
 <body onload="webGLStart();">
 
-    <h1> <marquee> Texture Mapping </marquee> </h1>
-    <canvas id="texture" style="border: none;" width="1340" height="550"></canvas>
+    <div id="header">
+    <p id="name"><marquee>TEXTURE MAPPING</marquee></p>
+    </div>
+    <br>
 
+
+    <canvas id="texture" style="border: none;" width="1340" height="600"></canvas>
+
+    <div id="button1">
+      <input id = "cur" type="file" name="pic" accept="image\*">
+    </div>
+
+        <button id="button2" onclick="webGLStart();">
+             Map Texture
+        </button>
+	<a href = "Unmap.html">
+    		<button id="button3">
+		 Unmapped
+    		</button>
+	</a>
 
 </body>
 
