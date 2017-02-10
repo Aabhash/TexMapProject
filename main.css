@@ -1,0 +1,90 @@
+div {
+	border-radius: 5px;
+}
+body{
+	background-color:#E6E6FA;
+}
+
+#header {
+	z-index: 1;
+	position: fixed;
+	width: 100%;
+	margin-top: -20px;
+	height: 60px;
+	background-color: #668284;
+	margin-bottom: 10px;
+}
+
+#name {
+
+	margin-left: 500px;
+    	margin-right: 500px;
+	padding-top: 5px;
+	font-size: 20px;
+	font-weight: bold;
+	font-family: Verdana, sans-serif;
+	color: #8FBC8F;
+}
+
+
+h4 {
+	margin-left: 5px;
+	margin-bottom: 15px;
+	font-family: Verdana, sans-serif;
+}
+
+
+a:hover {
+	font-weight: bold;
+}
+
+
+#button1
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 22px;
+	width: 230px;
+	text-align: center;
+	top: 550px;
+    	left: 20px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#button2
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 35px;
+	width: 100px;
+	text-align: center;
+	top: 518px;
+    	left: 275px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#button3
+{
+	position:relative;
+	border-radius: 5px;
+	border: 4px solid #BCC6CC;
+	background-color: #FFEBCD;
+	height: 35px;
+	width: 100px;
+	text-align: center;
+	top: 518px;
+    	left: 900px;
+    	right: 300px;
+    	bottom: 291px;
+}
+#texture
+{
+    position: fixed;
+    border-radius: 5px;
+    border: 4px solid #BCC6CC;
+    margin-top: 30px;
+}
